@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Leaflet sample</title>
+      <link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+      <script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+   </head>
+
+   <body>
+      <div id = "map" style = "width: 900px; height: 580px"></div>
+      <script>
+         // Imports the Google Cloud client library
+const speech = require('@google-cloud/speech');
+
+// Creates a client
+const client = new speech.SpeechClient();
+
+async function quickstart() {
+  // The path to the remote LINEAR16 file
+  const gcsUri = 'gs://cloud-samples-data/speech/brooklyn_bridge.raw';
+
+  // The audio file's encoding, sample rate in hertz, and BCP-47 language code
+  const audio = {
+    uri: gcsUri,
+  };
+  const config = {
+    encoding: 'LINEAR16',
+    sampleRateHertz: 16000,
+    languageCode: 'en-US',
+  };
+  const request = {
+    audio: audio,
+    config: config,
+  };
+
+  // Detects speech in the audio file
+  const [response] = await client.recognize(request);
+  const transcription = response.results
+    .map(result => result.alternatives[0].transcript)
+    .join('\n');
+  console.log(`Transcription: ${transcription}`);
+}
+quickstart();
+         
+      </script>
+   </body>
+   
+</html>

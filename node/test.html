@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Leaflet sample</title>
+      <link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+      <script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+   </head>
+
+   <body>
+      <div id = "map" style = "width: 900px; height: 580px"></div>
+      <script>
+      
+      
+        var template = '<table class="popup-table">\
+    <tr class="popup-table-row">\
+      <th class="popup-table-header">Coca cola:</th>\
+      <td id="value-arc" class="popup-table-data">10</td>\
+    </tr>\
+    <tr class="popup-table-row">\
+      <th class="popup-table-header">Onde-Onde:</th>\
+      <td id="value-speed" class="popup-table-data">22</td>\
+    </tr>\
+    <tr class="popup-table-row">\
+      <th class="popup-table-header">Average FootFall:</th>\
+      <td id="value-speed" class="popup-table-data">30</td>\
+    </tr>\
+  </table>\
+  <button id="button-submit" type="button">Rent Machine Slot</button>';
+      
+      
+      
+      
+         // Creating map options
+         var mapOptions = {
+            center: [1.5236839960337916, 110.39061169939919],
+            zoom: 17
+         }
+         
+         // Creating a map object
+         var map = new L.map('map', mapOptions);
+         
+         // Creating a Layer object
+         var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+         
+         // Adding layer to the map
+         map.addLayer(layer);
+                  
+         // Icon options
+        // Icon options
+        var iconOptions = {
+           iconUrl: 'vm.png',
+           iconSize: [50, 50]
+        }
+
+        // Creating a custom icon
+        var customIcon = L.icon(iconOptions); 
+        
+         // Creating a Marker
+         var markerOptions = {
+            clickable: true,
+            draggable: true,
+            icon: customIcon
+         }
+         
+         
+         var H_iconOptions = {
+           iconUrl: 'human.png',
+           iconSize: [50, 50]
+        }
+         
+         var H_customIcon = L.icon(H_iconOptions); 
+         
+         // Creating a Marker
+         var H_markerOptions = {
+            clickable: true,
+            draggable: true,
+            icon: H_customIcon
+         }
+         
+         
+         
+         var marker = new L.Marker([1.5246839960337916, 110.39361169939919], markerOptions);
+         marker.bindPopup('Coca Cola : 10 <br> Onde-Onde : 12 <br> Rent Price : RmXXXX.XX').openPopup();
+         
+         marker.addTo(map);
+         
+         var marker1 = new L.Marker([1.5259839960357916, 110.39061169979919], markerOptions);
+         marker1.bindPopup('Coca Cola : 10 <br> Nasi Lemak : 5 <br> Rent Price : RmXXX.XX').openPopup();
+         
+         marker1.addTo(map);
+         
+         var marker2 = new L.Marker([1.5216139960337916, 110.38761149939919], markerOptions);
+         marker2.bindPopup('Coca Cola : 10 <br> Salad : 5 <br> Rent Price : RmXX.XX').openPopup();
+         
+         marker2.addTo(map);
+         
+         
+         var marker3 = new L.Marker([1.5206139960337916, 110.38861149939919], markerOptions);
+         marker3.bindPopup(template).openPopup();
+         
+         marker3.addTo(map);
+         
+         
+         
+         var h_marker = new L.Marker([1.5236839960337916, 110.39061169939919], H_markerOptions);
+         h_marker.bindPopup('You are here').openPopup();
+         
+         h_marker.addTo(map);
+         
+      </script>
+   </body>
+   
+</html>
