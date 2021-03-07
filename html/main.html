@@ -6,12 +6,12 @@
     <link rel="icon" type="image/png" href="../assets/img/favicon.ico">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Hackathon Front Page (Example)</title>
+    <title>Hermes Machine Tracker</title>
 
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+
     <!-- Bootstrap core CSS     -->
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet" />
 
@@ -26,7 +26,19 @@
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="../assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
+   <link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+   <script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+   <script type="text/javascript" src="../assets/js/MovingMarker.js"></script>
+
 </head>
+
+<style>
+  #bottomright {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+  }
+</style>
 
 <body>
     <div class="main-panel">
@@ -119,14 +131,22 @@
     </div>
 
     <div class="wrapper">
+
+
+      <div id = "map" style = "width: 900px; height: 580px; margin-left:25%"></div>
+      <div id='btns' style ="margin-left:25%">
+        <button  class="btn btn-default" id='start'>Start</button>
+        <button  class="btn btn-default" id='stop'>Stop</button>
+      </div>
+
         <div class="sidebar" data-image="../assets/img/bar_backdrop_01.jpg">
             <!--
-      
+
                   Tip 1: you can change the color of the sidebar using: data-color="blue | azure | green | orange | red | purple"
                   Tip 2: you can also add an image using data-image tag
-      
+
               -->
-      
+
             <div class="logo">
               <center><img src="../assets/img/atlas_logo.png" height="48"></center>
             </div>
@@ -135,9 +155,9 @@
                       Atlas Auntypreneur Webapp
                   </a>
             </div>
-      
+
             <div class="sidebar-wrapper">
-      
+
               <div class="user">
                 <div class="photo">
                   <img src="../assets/img/face-0.jpg" />
@@ -156,105 +176,175 @@
                   </div>
                 </div>
               </div>
-      
+
               <ul class="nav">
                 <li class="active">
-                  <a href="dummy.html">
+                  <a href="#">
                     <i class="pe-7s-id"></i>
-                    <p>Entrepreneur Homepage</p>
+                    <p>Machine Tracking</p>
                   </a>
                 </li>
                 <li>
-                  <a href="dummy.html">
+                  <a href="voiceorder.html">
                     <i class="pe-7s-notebook"></i>
-                    <p>Entrepreneur Story</p>
+                    <p>Voice Ordering</p>
                   </a>
                 </li>
                 <li>
-                    <a href="dummy.html">
-                      <i class="fa fa-facebook-square"></i>
-                      <p>Facebook</p>
-                    </a>
-                  </li>
-                <li>
-                  <a href="dummy.html">
-                    <i class="fa fa-youtube-square"></i>
-                    <p>Youtube</p>
-                  </a>
-                </li>
-                <li>
-                  <a href="dummy.html">
-                    <i class="fa fa-glide"></i>
-                    <p>Tiktok</p>
-                  </a>
-                </li>
-                <li>
-                  <a href="dummy.html">
-                    <i class="fa fa-plus-circle"></i>
-                    <p>Add Social Media</p>
-                  </a>
-                </li>
-      
               </ul>
             </div>
           </div>
+
+         <div id="bottomright">
+             <iframe
+                allow="microphone;"
+                width="350"
+                height="430"
+                src="https://console.dialogflow.com/api-client/demo/embedded/d482abb5-7c15-4c97-ae2a-327bfbb900e6">
+            </iframe>
+
+         </div>
     </div>
+<script>
+
+    start.onclick = e => {
+        fetch('http://13.212.74.216:8081/machines/123abc', {
+                method: 'POST',
+                body: {
+                    "uuid": "123abc",
+                    "latitude": "1.523043485977971",
+                    "longitude": "110.39026597109951",
+                    "avg_footfall": "20",
+                    "status": "start"
+                },
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+            });
+    };
 
 
-    
-</body>
+    var template = '<table class="popup-table">\
+    <tr class="popup-table-row">\
+      <th class="popup-table-header">Coca cola:</th>\
+      <td id="value-arc" class="popup-table-data">10</td>\
+    </tr>\
+    <tr class="popup-table-row">\
+      <th class="popup-table-header">Onde-Onde:</th>\
+      <td id="value-speed" class="popup-table-data">22</td>\
+    </tr>\
+    <tr class="popup-table-row">\
+      <th class="popup-table-header">Average FootFall:</th>\
+      <td id="value-speed" class="popup-table-data">30</td>\
+    </tr>\
+  </table>\
+  <button id="button-submit" type="button">Rent Machine Slot</button>';
 
-<!--   Core JS Files and PerfectScrollbar library inside jquery.ui   -->
-<script src="../assets/js/jquery.min.js" type="text/javascript"></script>
-<script src="../assets/js/jquery-ui.min.js" type="text/javascript"></script>
-<script src="../assets/js/bootstrap.min.js" type="text/javascript"></script>
+         // Creating map options
+         var mapOptions = {
+            center: [3.1555440004403494, 101.7142294339286],
+            zoom: 17
+         }
 
-<!--  Forms Validations Plugin -->
-<script src="../assets/js/jquery.validate.min.js"></script>
+         // Creating a map object
+         var map = new L.map('map', mapOptions);
 
-<!--  Plugin for Date Time Picker and Full Calendar Plugin-->
-<script src="../assets/js/moment.min.js"></script>
+         // Creating a Layer object
+         var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
 
-<!--  Date Time Picker Plugin is included in this js file -->
-<script src="../assets/js/bootstrap-datetimepicker.js"></script>
+         // Adding layer to the map
+         map.addLayer(layer);
 
-<!--  Select Picker Plugin -->
-<script src="../assets/js/bootstrap-selectpicker.js"></script>
+         // Icon options
+        // Icon options
+        var iconOptions = {
+           iconUrl: '../assets/img/vm.png',
+           iconSize: [50, 50]
+        }
 
-<!--  Checkbox, Radio, Switch and Tags Input Plugins -->
-<script src="../assets/js/bootstrap-checkbox-radio-switch-tags.js"></script>
+        var iconCharging = {
+           iconUrl: '../assets/img/charge.png',
+           iconSize: [50, 50]
+        }
 
-<!--  Charts Plugin -->
-<script src="../assets/js/chartist.min.js"></script>
+        var iconRestock = {
+           iconUrl: '../assets/img/Restock.png',
+           iconSize: [50, 50]
+        }
 
-<!--  Notifications Plugin    -->
-<script src="../assets/js/bootstrap-notify.js"></script>
+        // Creating a custom icon
+        var customIcon = L.icon(iconOptions);
+        var chargingIcon = L.icon(iconCharging);
+        var restockIcon = L.icon(iconRestock);
 
-<!-- Sweet Alert 2 plugin -->
-<script src="../assets/js/sweetalert2.js"></script>
+         // Creating a Marker
+         var markerOptions = {
+            clickable: true,
+            draggable: true,
+            icon: customIcon
+         }
 
-<!-- Vector Map plugin -->
-<script src="../assets/js/jquery-jvectormap.js"></script>
+         var H_iconOptions = {
+           iconUrl: 'human.png',
+           iconSize: [50, 50]
+        }
 
-<!--  Google Maps Plugin    -->
-<script src="https://maps.googleapis.com/maps/api/js"></script>
+         var H_customIcon = L.icon(H_iconOptions);
 
-<!-- Wizard Plugin    -->
-<script src="../assets/js/jquery.bootstrap.wizard.min.js"></script>
+         // Creating a Marker
+         var H_markerOptions = {
+            clickable: true,
+            draggable: true,
+            icon: H_customIcon
+         }
 
-<!--  bootstrap Table Plugin    -->
-<script src="../assets/js/bootstrap-table.js"></script>
+         var myMovingMarker = new L.Marker.movingMarker([[3.1570839310254515, 101.71350523752206],[3.1587229502880407, 101.71319410128814]],
+                                 [100000], {autostart: true, icon: customIcon}).addTo(map);
+         myMovingMarker.bindPopup('Coca Cola : 3 <br> Battery: 60%').openPopup();
 
-<!--  Plugin for DataTables.net  -->
-<script src="../assets/js/jquery.datatables.js"></script>
+         var myMovingMarker2 = new L.Marker.movingMarker([[3.156730416727753, 101.71425625601779], [3.15605552546176, 101.71625181944923]],
+                                 [100000], {autostart: true, icon: customIcon}).addTo(map);
+         myMovingMarker2.bindPopup('Pepsi : 0 <br> Battery: 10%').openPopup();
 
-<!--  Full Calendar Plugin    -->
-<script src="../assets/js/fullcalendar.min.js"></script>
 
-<!-- Light Bootstrap Dashboard Core javascript and methods -->
-<script src="../assets/js/light-bootstrap-dashboard.js"></script>
+         var myMovingMarker3 = new L.Marker.movingMarker([[3.1543200887652514, 101.71375200074208], [3.154823579957042, 101.71685263424581]],
+                                 [100000], {autostart: true, icon: customIcon}).addTo(map);
+         myMovingMarker3.bindPopup('Pepsi : 50 <br> Pringles : 90 <br> Battery: 99%').openPopup();
 
-<!-- Light Bootstrap Dashboard DEMO methods, don't include it in your project! -->
-<script src="../assets/js/demo.js"></script>
+         var myMovingMarker4 = new L.Marker.movingMarker([[3.1549628434351487, 101.71259328649154], [3.1569339552774784, 101.71251818464198]],
+                                 [100000], {autostart: true, icon: customIcon}).addTo(map);
+         myMovingMarker4.bindPopup('Coca Cola : 3 <br> Chipsmore : 1 <br> Battery: 95%').openPopup();
 
+         var marker = new L.Marker([3.1550405095974914, 101.71546861444651], markerOptions);
+         marker.bindPopup('Coca Cola : 10 <br> Onde-Onde : 12 <br> Battery: 90%').openPopup();
+
+         marker.addTo(map);
+
+         var marker1 = new L.Marker([3.155552034866718, 101.7159406832153], {icon: chargingIcon});
+         marker1.bindPopup('Charging Station').openPopup();
+
+         marker1.addTo(map);
+
+         var restock = new L.Marker([3.1553377834757077, 101.71399876405714], {icon: restockIcon});
+         restock.bindPopup('Restocking Station').openPopup();
+
+         restock.addTo(map);
+
+         var marker2 = new L.Marker([3.1563795804497428, 101.7142938069425], markerOptions);
+         marker2.bindPopup('Coca Cola : 10 <br> Salad : 5 <br> Battery: 70%').openPopup();
+
+         marker2.addTo(map);
+
+         var marker3 = new L.Marker([3.1546655694497097, 101.71314582152765], markerOptions);
+         marker3.bindPopup(template).openPopup();
+
+         marker3.addTo(map);
+
+         var h_marker = new L.Marker([1.5236839960337916, 110.39061169939919], H_markerOptions);
+         h_marker.bindPopup('You are here').openPopup();
+
+         h_marker.addTo(map);
+
+      </script>
+   </body>
 </html>
