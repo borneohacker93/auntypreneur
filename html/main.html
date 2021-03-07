@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="../assets/img/favicon.ico">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>Hermes Machine Tracker</title>
@@ -134,10 +133,25 @@
 
 
       <div id = "map" style = "width: 900px; height: 580px; margin-left:25%"></div>
-      <div id='btns' style ="margin-left:25%">
-        <button  class="btn btn-default" id='start'>Start</button>
-        <button  class="btn btn-default" id='stop'>Stop</button>
+        <br><br>
+        <form style ="margin-left:25%; text-align: center;">
+          <fieldset>
+          <select id = "selColor">
+           <option value = "#FF00FF">abc123</option>
+          </select>
+          <input type = "button"
+            value = "Select Machine"
+          </fieldset>
+         </form>
+        <br>
+
+      <div id='btns'>
+        <button  class="btn btn-default" id='starting'>Start</button>
+        <button  class="btn btn-default" id='stopping'>Stop</button>
+        <button  class="btn btn-default" id='dispense'>Dispense</button>
       </div>
+
+
 
         <div class="sidebar" data-image="../assets/img/bar_backdrop_01.jpg">
             <!--
@@ -207,22 +221,6 @@
     </div>
 <script>
 
-    start.onclick = e => {
-        fetch('http://13.212.74.216:8081/machines/123abc', {
-                method: 'POST',
-                body: {
-                    "uuid": "123abc",
-                    "latitude": "1.523043485977971",
-                    "longitude": "110.39026597109951",
-                    "avg_footfall": "20",
-                    "status": "start"
-                },
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-            });
-    };
-
 
     var template = '<table class="popup-table">\
     <tr class="popup-table-row">\
@@ -285,7 +283,7 @@
          }
 
          var H_iconOptions = {
-           iconUrl: 'human.png',
+           iconUrl: '../assets/img/human.png',
            iconSize: [50, 50]
         }
 
@@ -300,20 +298,20 @@
 
          var myMovingMarker = new L.Marker.movingMarker([[3.1570839310254515, 101.71350523752206],[3.1587229502880407, 101.71319410128814]],
                                  [100000], {autostart: true, icon: customIcon}).addTo(map);
-         myMovingMarker.bindPopup('Coca Cola : 3 <br> Battery: 60%').openPopup();
+         myMovingMarker.bindPopup('Coca Cola : 3 <br> UUID : zef234 <br> Battery: 60%').openPopup();
 
          var myMovingMarker2 = new L.Marker.movingMarker([[3.156730416727753, 101.71425625601779], [3.15605552546176, 101.71625181944923]],
                                  [100000], {autostart: true, icon: customIcon}).addTo(map);
-         myMovingMarker2.bindPopup('Pepsi : 0 <br> Battery: 10%').openPopup();
+         myMovingMarker2.bindPopup('Pepsi : 0 <br> UUID : ghi756 <br> Battery: 10%').openPopup();
 
 
          var myMovingMarker3 = new L.Marker.movingMarker([[3.1543200887652514, 101.71375200074208], [3.154823579957042, 101.71685263424581]],
                                  [100000], {autostart: true, icon: customIcon}).addTo(map);
-         myMovingMarker3.bindPopup('Pepsi : 50 <br> Pringles : 90 <br> Battery: 99%').openPopup();
+         myMovingMarker3.bindPopup('Pepsi : 50 <br> Pringles : 90 <br> UUID : def456 <br>  Battery: 99%').openPopup();
 
          var myMovingMarker4 = new L.Marker.movingMarker([[3.1549628434351487, 101.71259328649154], [3.1569339552774784, 101.71251818464198]],
-                                 [100000], {autostart: true, icon: customIcon}).addTo(map);
-         myMovingMarker4.bindPopup('Coca Cola : 3 <br> Chipsmore : 1 <br> Battery: 95%').openPopup();
+                                 [50000], {autostart: true, icon: customIcon}).addTo(map);
+         myMovingMarker4.bindPopup('Coca Cola : 3 <br> Chipsmore : 1 <br> UUID : abc123 <br> Battery: 95%').openPopup();
 
          var marker = new L.Marker([3.1550405095974914, 101.71546861444651], markerOptions);
          marker.bindPopup('Coca Cola : 10 <br> Onde-Onde : 12 <br> Battery: 90%').openPopup();
@@ -340,10 +338,65 @@
 
          marker3.addTo(map);
 
-         var h_marker = new L.Marker([1.5236839960337916, 110.39061169939919], H_markerOptions);
+         var h_marker = new L.Marker([3.154962843432477, 101.71425357380225], H_markerOptions);
          h_marker.bindPopup('You are here').openPopup();
 
          h_marker.addTo(map);
+
+        starting.onclick = e => {
+            fetch('http://13.212.74.216:8081/machines/123abc', {
+                    method: 'PUT',
+                    body: {
+                        "uuid": "123abc",
+                        "latitude": "1.523043485977971",
+                        "longitude": "110.39026597109951",
+                        "avg_footfall": "20",
+                        "status": "start"
+                    },
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Access-Control-Request-Method': 'DELETE, POST, GET, PUT, OPTIONS',
+                      'Access-Control-Request-Origin': '*',
+                      'Access-Control-Allow-Headers' : 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With'
+                    }
+                });
+            myMovingMarker4.resume();
+        };
+
+        stopping.onclick = e => {
+            fetch('http://13.212.74.216:8081/machines/123abc', {
+                    method: 'PUT',
+                    body: {
+                        "uuid": "123abc",
+                        "latitude": "1.523043485977971",
+                        "longitude": "110.39026597109951",
+                        "avg_footfall": "20",
+                        "status": "stop"
+                    },
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Access-Control-Request-Origin': '*',
+                      'Access-Control-Request-Method': 'PUT, OPTIONS'
+                    }
+                });
+            myMovingMarker4.pause();
+        };
+
+         dispense.onclick = e => {
+            fetch('http://13.212.74.216:8081/machines/123abc', {
+                    method: 'PUT',
+                    body: {
+                        "uuid": "123abc",
+                        "latitude": "1.523043485977971",
+                        "longitude": "110.39026597109951",
+                        "avg_footfall": "20",
+                        "status": "dispense"
+                    },
+                    headers: {
+                      'Content-Type': 'application/json'
+                    }
+                });
+        };
 
       </script>
    </body>
